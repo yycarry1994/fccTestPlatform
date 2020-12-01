@@ -42,11 +42,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'projects.apps.ProjectsConfig',
-    'users.apps.UsersConfig',
-    'interfaces.apps.InterfacesConfig',
     'rest_framework',
     'drf_yasg',
+    'projects',
+    'users',
+    'interfaces',
+    'configures',
+    'debugtalks',
+    'envs',
+    'reports',
+    'testcases',
+    'testsuites',
 ]
 
 MIDDLEWARE = [
@@ -93,7 +99,7 @@ WSGI_APPLICATION = 'fccTestPlatform.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mysqltest',
+        'NAME': 'fcctestplatfrom',
         'HOST': '172.25.17.134',
         'PORT': '3306',
         'USER': 'root',
@@ -203,5 +209,5 @@ JWT_AUTH = {
 }
 
 
-AUTH_USER_MODEL = 'users.UserModel'
+# AUTH_USER_MODEL = 'users.UserModel'
 

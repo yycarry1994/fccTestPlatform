@@ -1,6 +1,10 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from users.models import *
+from django.contrib.auth.models import User
+from rest_framework_jwt.settings import api_settings
+jwt_payload_handler = api_settings.JWT_PAYLOAD_HANDLER
+jwt_encode_handler = api_settings.JWT_ENCODE_HANDLER
 
 # payload = jwt_payload_handler(user)
 #
@@ -13,10 +17,11 @@ from users.models import *
 class UserSerializer(serializers.ModelSerializer):
 
     password_confirm = serializers.CharField(write_only=True, help_text='确认密码',)
+    token = serializers.CharField(read_only=True, help_text='token')
 
     class Meta:
-        model = UserModel
-        fields = ['id', 'username', 'password', 'password_confirm', 'email']
+        model = User
+        fields = ['id', 'username', 'password', 'password_confirm', 'email', 'token']
         extra_kwargs = {
             'id': {
                 'read_only': True
@@ -27,7 +32,7 @@ class UserSerializer(serializers.ModelSerializer):
                 'required': True,
                 'help_text': '用户名',
                 'validators': [
-                    UniqueValidator(UserModel.objects.all(), message='用户名名不能重复'),
+                    UniqueValidator(User.objects.all(), message='用户名名不能重复'),
                     # is_container_project_word
                 ],
                 'error_messages': {
@@ -66,7 +71,10 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data.pop('password_confirm')
-        user = UserModel.objects.create_user(**validated_data)
+        user = User.objects.create_user(**validated_data)
+        payload = jwt_payload_handler(user)
+        token = jwt_encode_handler(payload)
+        user.token = token
         return user
 
     # def create_uesr(self, validated_data):

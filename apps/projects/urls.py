@@ -1,8 +1,13 @@
-from django.urls import path, re_path
 from rest_framework import routers
-from rest_framework_jwt.views import obtain_jwt_token
-from users import views
+
+from projects import views
+from . import views
+
+router = routers.SimpleRouter()
+
+router.register(r'projects', views.ProjectViewSet)
+
 
 urlpatterns = [
-
 ]
+urlpatterns += router.urls

@@ -7,13 +7,13 @@ import re
 
 
 router = routers.SimpleRouter()
-router.register(r'users', views.Users)
+router.register(r'user', views.Users)
 # router.register(r'users', views.Count)
 
 urlpatterns = [
     path('login/', obtain_jwt_token),
-    path('user/<str:email>/count', views.Count.as_view({'get': 'list_0'})),
-    path('user/<str:username>/count', views.Count.as_view({'get': 'list_1'}))
+    re_path(r'^user/(?P<email>([\w]+\.*)([\w]+)\@[\w]+\.\w{3}(\.\w{2}|))/count$', views.Count.as_view({'get': 'list_0'})),
+    re_path(r'^user/(?P<username>\w{6,20})/count$', views.Count.as_view({'get': 'list_1'}))
 ]
-
 urlpatterns += router.urls
+
