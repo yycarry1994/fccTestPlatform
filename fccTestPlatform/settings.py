@@ -43,7 +43,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'corsheaders',
     'drf_yasg',
+
     'projects',
     'users',
     'interfaces',
@@ -52,12 +54,13 @@ INSTALLED_APPS = [
     'envs',
     'reports',
     'testcases',
-    'testsuites',
+    'testsuits',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -177,7 +180,7 @@ REST_FRAMEWORK = {
     # a.必须得指定分页引擎
     'DEFAULT_PAGINATION_CLASS': 'utils.pagination.PageNumberPagination',
     # b.必须指定每一页显示多少条数据
-    'PAGE_SIZE': 3,
+    # 'PAGE_SIZE': 3,
 
     # 指定认证方式（列表的认证机制是有顺序的）
     'DEFAULT_AUTHENTICATION_CLASSES': [
@@ -209,5 +212,21 @@ JWT_AUTH = {
 }
 
 
-# AUTH_USER_MODEL = 'users.UserModel'
+# CORS_ORIGIN_ALLOW_ALL为True, 指定所有域名(ip)都可以访问后端接口, 默认为False
+CORS_ORIGIN_ALLOW_ALL = True
+
+# CORS_ORIGIN_WHITELIST指定能够访问后端接口的ip或域名列表
+# CORS_ORIGIN_WHITELIST = [
+#     "http://127.0.0.1:8080",
+#     "http://localhost:8080",
+#     "http://192.168.1.63:8080",
+#     "http://127.0.0.1:9000",
+#     "http://localhost:9000",
+# ]
+
+# 允许跨域时携带Cookie, 默认为False
+CORS_ALLOW_CREDENTIALS = True
+
+# 添加测试报告存放路径
+REPORT_DIR = os.path.join(BASE_DIR, 'reports')
 

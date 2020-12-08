@@ -25,7 +25,7 @@ class ProjectModelSerializer(serializers.ModelSerializer):
         # 创建一条debugtalk数据
         # DebugTalks.objects.create(project=project)
         DebugTalks.objects.create(project_id=project.id)
-        return super().create(validated_data)
+        return project
 
 
 class ProjectNamesSerializer(serializers.ModelSerializer):

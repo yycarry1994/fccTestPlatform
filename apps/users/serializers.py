@@ -79,3 +79,29 @@ class UserSerializer(serializers.ModelSerializer):
 
     # def create_uesr(self, validated_data):
     #     pass
+
+
+class Userloginserializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['username', 'password']
+
+        extra_kwargs = {
+            'username': {
+                'min_length': 6,
+                'max_length': 20,
+                'required': True,
+                'help_text': '用户名'
+            },
+            'password': {
+                'min_length': 6,
+                'max_length': 20,
+                'write_only': True,
+                'help_text': '密码',
+                'error_messages': {
+                    'min_length': '密码不能少于6位',
+                    'max_length': '密码不能超过20位',
+                }
+            }
+        }
