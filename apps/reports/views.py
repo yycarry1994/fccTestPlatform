@@ -11,6 +11,7 @@ from rest_framework import filters
 from .utils import get_file_content
 import json
 from django.conf import settings
+from django.utils.encoding import escape_uri_path
 # Create your views here.
 
 
@@ -44,8 +45,9 @@ class ReportsViewSet(mixins.ListModelMixin,
         report_dir = settings.REPORT_DIR
         # 生成测试报告完整路径
         report_full_dir = os.path.join(report_dir, instance.name + '.html')
-        with open(report_full_dir, 'w') as f:
-            f.write(instance.html)
+        if not os.path.exists(report_full_dir):
+            with open(report_full_dir, 'w') as f:
+                f.write(instance.html)
 
         # 读写html文件对象，并将其传递给StreamingHttpResponse
         # 第一个参数需要传递生成器对象（每次迭代需要返回文件数据）
@@ -56,6 +58,6 @@ class ReportsViewSet(mixins.ListModelMixin,
         response['Content-Type'] = 'application/octet-stream'
         # Content-Disposition
         # response['Content-Disposition'] = f"attachment; filename*=UTF-8''{instance.name}"
-        response['Content-Disposition'] = f"attachment; filename*=UTF-8''{instance.name}"
+        response['Content-Disposition'] = f"attachment; filename*=UTF-8''{escape_uri_path(instance.name)}"
 
         return response

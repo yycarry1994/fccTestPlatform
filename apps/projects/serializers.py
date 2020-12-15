@@ -1,7 +1,5 @@
 import locale
 from rest_framework import serializers
-
-
 from projects.models import Projects
 from debugtalks.models import DebugTalks
 

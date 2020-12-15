@@ -229,4 +229,6 @@ CORS_ALLOW_CREDENTIALS = True
 
 # 添加测试报告存放路径
 REPORT_DIR = os.path.join(BASE_DIR, 'reports')
+# 测试用例运行的路径
+SUITES_DIR = os.path.join(BASE_DIR, 'suites')
 

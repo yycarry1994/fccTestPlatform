@@ -48,3 +48,5 @@ class InterfaceNameSerializer(serializers.ModelSerializer):
     class Meta:
         model = Interfaces
         fields = ('id', 'name')
+
+

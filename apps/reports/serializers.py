@@ -1,11 +1,5 @@
-import re
-
 from rest_framework import serializers
-from rest_framework import validators
-
 from .models import Reports
-from projects.models import Projects
-from interfaces.models import Interfaces
 
 
 class ReportModelSerializer(serializers.ModelSerializer):
@@ -32,4 +26,3 @@ class ReportModelSerializer(serializers.ModelSerializer):
     #     res = super().to_internal_value(data)
     #     # 进行你需要的操作
     #     return res
-
