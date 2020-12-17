@@ -1,3 +1,7 @@
+import os
+from datetime import datetime
+
+from django.conf import settings
 from django.db.models import Count
 from django.shortcuts import render
 import logging
@@ -6,10 +10,12 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from utils import pagination
+
+from envs.models import Envs
+from utils import pagination, common
 from rest_framework import filters
 
-from projects.serializers import ProjectModelSerializer, ProjectNamesSerializer
+from projects.serializers import ProjectModelSerializer, ProjectNamesSerializer, ProjectRunSerializer
 from interfaces.serializers import InterfaceNameSerializer
 from projects.models import Projects
 from testcases.models import Testcases
@@ -103,8 +109,13 @@ class ProjectViewSet(viewsets.ModelViewSet):
         """
         if self.action == 'names':
             return ProjectNamesSerializer
+
         elif self.action == 'interfaces':
             return InterfaceNameSerializer
+
+        elif self.action == 'run':
+            return ProjectRunSerializer
+
         else:
             return self.serializer_class
 
@@ -144,3 +155,18 @@ class ProjectViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(instance=queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+    @action(methods=['POST'], detail=True)
+    def run(self, request, *args, **kwargs):
+        instance = self.get_object()
+        # 2、创建目录
+        env, testcase_dir = common.get_env_dir(self.get_serializer(data=request.data))
+
+        # 3、创建用例运行需要的yaml文件
+        interface_qs = Interfaces.objects.filter(project=instance.id)
+        for interface_obj in interface_qs:
+            testcases_qs = Testcases.objects.filter(interface=interface_obj.id)
+            for testcases_obj in testcases_qs:
+                common.generate_testcase_file(testcases_obj, env, testcase_dir)
+
+        # 4、运行测试用例并生成报告
+        return common.run_testcase(instance, testcase_dir)

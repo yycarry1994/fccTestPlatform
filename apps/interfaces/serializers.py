@@ -3,6 +3,7 @@ from rest_framework.validators import UniqueValidator
 
 from interfaces.models import Interfaces
 from projects.models import Projects
+from utils.validates import is_existed_envs_id
 
 
 class InterfaceModelSerializer(serializers.ModelSerializer):
@@ -41,6 +42,15 @@ class InterfaceModelSerializer(serializers.ModelSerializer):
         tmp = super().to_internal_value(data)
         tmp['project'] = tmp.pop('project_id')
         return tmp
+
+
+class InterfaceRunSerializer(serializers.ModelSerializer):
+
+    env_id = serializers.IntegerField(validators=[is_existed_envs_id])
+
+    class Meta:
+        model = Interfaces
+        fields = ('id', 'env_id')
 
 
 class InterfaceNameSerializer(serializers.ModelSerializer):

@@ -43,6 +43,7 @@ urlpatterns = [
     path('', include('reports.urls')),
     path('', include('testcases.urls')),
     path('', include('configures.urls')),
+    path('', include('summary.urls')),
 
     path('docs/', include_docs_urls(title='测试平台接口文档', description='非常友好的接口文档')),
 
