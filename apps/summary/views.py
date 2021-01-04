@@ -62,3 +62,4 @@ class SummaryViewSet(ListModelMixin,
             }
         }
         return Response(data, status=status.HTTP_200_OK)
+

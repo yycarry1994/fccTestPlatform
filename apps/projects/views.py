@@ -1,23 +1,16 @@
-import os
-from datetime import datetime
-
-from django.conf import settings
 from django.db.models import Count
-from django.shortcuts import render
 import logging
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-
-from envs.models import Envs
-from utils import pagination, common
 from rest_framework import filters
 
 from projects.serializers import ProjectModelSerializer, ProjectNamesSerializer, ProjectRunSerializer
 from interfaces.serializers import InterfaceNameSerializer
 from projects.models import Projects
+from utils import pagination, common
 from testcases.models import Testcases
 from testsuits.models import Testsuits
 from interfaces.models import Interfaces
