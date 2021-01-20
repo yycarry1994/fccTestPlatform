@@ -15,6 +15,7 @@ from testcases.models import Testcases
 from testsuits.models import Testsuits
 from interfaces.models import Interfaces
 from configures.models import Configures
+from .tasks import yb_run_testcase
 # Create your views here.
 
 
@@ -162,4 +163,5 @@ class ProjectViewSet(viewsets.ModelViewSet):
                 common.generate_testcase_file(testcases_obj, env, testcase_dir)
 
         # 4、运行测试用例并生成报告
-        return common.run_testcase(instance, testcase_dir)
+        # 使用异步框架celery，方法使用delay调用
+        return yb_run_testcase.delay(instance, testcase_dir)

@@ -17,6 +17,7 @@ from testcases.serializers import TestcasesNameSerializer
 from rest_framework import status, filters
 from utils import pagination
 from utils import common
+from .tasks import yb_run_testcase
 # Create your views here.
 
 
@@ -78,7 +79,7 @@ class InterfaceViewSet(ModelViewSet):
             common.generate_testcase_file(testcase_obj, env, testcase_dir)
 
         # 4、运行测试用例并生成报告
-        return common.run_testcase(instance, testcase_dir)
+        return yb_run_testcase.delay(instance, testcase_dir)
 
     def get_serializer_class(self):
         """

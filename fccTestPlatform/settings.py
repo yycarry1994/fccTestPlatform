@@ -112,6 +112,59 @@ DATABASES = {
     }
 }
 
+LOGGING = {
+    # 指定日志版本
+    'version': 1,
+    # 指定是否禁用其他已存在的日志器
+    'disable_existing_loggers': False,
+    # 指定日志的输出格式
+    'formatters': {
+        # 指定普通的日志输出格式
+        'simple': {
+            'format': '%(asctime)s - [%(levelname)s] - [msg]%(message)s'
+        },
+        # 指定更详细的日志输出格式
+        'verbose': {
+            'format': '%(asctime)s - [%(levelname)s] - %(name)s - [msg]%(message)s - [%(filename)s:%(lineno)d ]'
+        },
+    },
+    # 指定日志的过滤器
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    # 定义日志的输出渠道
+    'handlers': {
+        # 指定控制台日志输出渠道
+        'console': {
+            'level': 'DEBUG',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple'
+        },
+        # 指定日志输出的日志配置
+        'file': {
+            'level': 'INFO',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_DIR, "logs/mytest.log"),  # 日志文件的位置
+            # 每一个日志文件的最大字节数
+            'maxBytes': 100 * 1024 * 1024,
+            # 指定日志文件总数
+            'backupCount': 10,
+            'formatter': 'verbose'
+        },
+    },
+    # 指定日志器
+    'loggers': {
+        'mytest': {  # 定义了一个名为mytest的日志器
+            'handlers': ['console', 'file'],
+            'propagate': True,
+            'level': 'DEBUG',  # 日志器接收的最低日志级别
+        },
+    }
+}
+
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -232,4 +285,34 @@ CORS_ALLOW_CREDENTIALS = True
 REPORT_DIR = os.path.join(BASE_DIR, 'reports')
 # 测试用例运行的路径
 SUITES_DIR = os.path.join(BASE_DIR, 'suites')
+
+# redis缓存相关配置
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://172.25.17.134:6381/1",
+        "TIMEOUT": 300,
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            # "PASSWORD": "",
+            "SOCKET_CONNECT_TIMEOUT": 5,  # in seconds    连接超时时间
+            "SOCKET_TIME": 5,     # r/w timeout in seconds    每次读写数据超时时间
+        }
+    }
+}
+
+# celery任务队列相关配置
+CELERY_BROKER_URL = 'redis://172.25.17.134:6381/0'
+CELERY_RESULT_BACKEND = 'redis://172.25.17.134:6381/1'
+CELERY_RESULT_SERIALIZER = 'pickle'
+CELERY_TASK_SERIALIZER = 'pickle'
+CELERY_ACCEPT_CONTENT = ['pickle', 'json']
+# CELERY_RESULT_SERIALIZER = 'json'
+# CELERY_TASK_SERIALIZER = 'json'
+
+CELERY_TIMEZONE = 'Asia/Shanghai'
+CELERYD_MAX_TASKS_PER_CHILD = 10
+CELERYD_LOG_FILE = os.path.join(BASE_DIR, "logs", "celery_work.log")
+CELERYBEAT_LOG_FILE = os.path.join(BASE_DIR, "logs", "celery_beat.log")
+
 

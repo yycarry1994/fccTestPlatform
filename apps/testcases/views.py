@@ -18,6 +18,7 @@ from testcases.models import Testcases
 from envs.models import Envs
 from utils.pagination import PageNumberPagination
 from utils import common
+from .tasks import yb_run_testcase
 # Create your views here.
 
 
@@ -126,7 +127,7 @@ class TestcasesViewSet(ModelViewSet):
         common.generate_testcase_file(instance=instance, env=env, testcase_dir=testcase_dir)
 
         # 4、运行用例并生成测试报告
-        return common.run_testcase(instance, testcase_dir)
+        return yb_run_testcase.delay(instance, testcase_dir)
 
     def get_serializer_class(self):
         return TestcasesRunSerializer if self.action == 'run' else self.serializer_class

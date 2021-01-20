@@ -158,8 +158,11 @@ def run_testcase(instance, testcase_dir_path):
         return Response(res, status=400)
 
     # 3、创建报告
+    # generate_report(runner, instance)
+    # return generate_report(runner, instance)
     report_id = generate_report(runner, instance)
-    return Response({'id': report_id}, status=201)
+    return report_id
+    # return Response({'id': report_id}, status=201)
 
 
 def get_env_dir(serializer):
